@@ -1,3 +1,5 @@
+use employeeDB;
+
 insert into department
 (name)
 values 
@@ -18,6 +20,6 @@ insert into employee
 (first_name, last_name, role_id, manager_id)
 values 
 ('Allen','Francis', 0, 1),
-('Booth','Kathleen' 1, null),
+('Booth','Kathleen', 1, null),
 ('Cerf','Vinton', 2, 0),
 ('Cook','Stephen', 3, 0);

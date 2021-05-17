@@ -22,7 +22,7 @@ create table employee (
     id int not null auto_increment,
     first_name varchar(30),
     last_name varchar(30),
-    rold_id int,  -- role employee has
+    role_id int,  -- role employee has
     manager_id int null,  -- can be null if no manager
     primary key(id)
 );
