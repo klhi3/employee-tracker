@@ -1,10 +1,9 @@
 const mysql = require('mysql');
-const util=require('util');
+// const util=require('util');
 const config = require('./config.js');
 
 //display console.table(c)
 const cTable = require('console.table'); 
-const { inherits } = require('node:util');
 
 //connection to the database mysql : config file
 const conn = mysql.createConnection(config);
@@ -70,18 +69,23 @@ const sqlSelect = (type)=>{
                   group by d.name
                   with rollup ;`;
      case 13 :  // all employees' name 
-        return  `select id as key, concat(first_name, " ", last_name) as value
-                 from employee`;                 
+        return  `select *  from employee`;                 
+     case 14 :  // all roles 
+        return  `select * from role`;          
    } 
   }
 
 //query select in the db
 const renderQuery = (str, data) => {
-    conn.query(str, data, (err, res) => {
+    console.log('1xxxx\n');
+    conn.query(str, data, async (err, res) => {
       if (err) throw err;
+      console.log('2xxxx\n');
       console.table(res);
+      console.log('3xxxx\n');
       // conn.end();
     });
+    console.log('4xxxx\n');
 };
 
 const returnQuery = (str) => {
@@ -111,13 +115,12 @@ const alterQuery = (str, data) => {
 // }
 
 // Connect to the DB
-init(()=>{
-conn.connect((err) => {
-  if (err) throw err;
-  console.log(`connected as id ${conn.threadId}\n`);
-  //requested operation 
-  // renderQuery(sqlSelect(12),data);
+const init = (()=>{
+  conn.connect((err) => {
+    if (err) throw err;
+    console.log(`connected as id ${conn.threadId}\n`);
+  });
 });
-});
+
 
 module.exports = { data, conn, init, sqlSelect, returnQuery, renderQuery, alterQuery  };
