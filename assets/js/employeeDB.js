@@ -94,9 +94,10 @@ const alterQuery = (str, data) => {
 // }
 
 // Connect to the DB
-conn.connect((err) => {
-  if (err) throw err;
-  console.log(`connected as id ${conn.threadId}\n`);
-  //requested operation 
-  renderQuery(sqlSelect(12),data);
-});
+
+    conn.connect((err) => {
+      if (err) throw err;
+      console.log(`connected as id ${conn.threadId}\n`);
+      //requested operation 
+      renderQuery(sqlSelect(12),data);
+    });
