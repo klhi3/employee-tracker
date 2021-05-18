@@ -1,8 +1,10 @@
 const mysql = require('mysql');
+const util=require('util');
 const config = require('./config.js');
 
 //display console.table(c)
 const cTable = require('console.table'); 
+const { inherits } = require('node:util');
 
 //connection to the database mysql : config file
 const conn = mysql.createConnection(config);
@@ -21,10 +23,12 @@ const sqlSelect = (type)=>{
               from role as r
               left join department as d on department_id = d.id`;
      case 2 :  // all employees
-      return  `select e.id, e.first_name as name, e.last_name as 'last name', r.title as role, ifnull(m.first_name,'') as manager 
+      return  `select e.id, e.first_name, e.last_name, r.title, d.name as dept, 
+               CONCAT('$ ', FORMAT(r.salary, 0)) as salary, ifnull(m.first_name,'') as manager 
                from employee as e 
                left join role as r on e.role_id = r.id 
-               left join employee as m on e.manager_id = m.id`;
+               left join department as d on r.department_id = d.id
+               left join employee as m on e.manager_id = m.id;`;
      case 3 :  // add dept
        return `insert into department (name) value (?)`;
      case 4 :  // add role
@@ -59,12 +63,15 @@ const sqlSelect = (type)=>{
      case 12 :  // Budget by dept and total in the last row
         return  `select 
                   case grouping(d.name) when 1 then 'Total' else d.name end as dept, 
-                  CONCAT('$ ', FORMAT(sum(r.salary), 0))  as budget
+                  CONCAT('$ ', FORMAT(sum(r.salary), 0)) as budget
                   from employee as e 
                   left join role as r on e.role_id = r.id 
                   left join department as d on d.id = r.department_id
                   group by d.name
                   with rollup ;`;
+     case 13 :  // all employees' name 
+        return  `select id as key, concat(first_name, " ", last_name) as value
+                 from employee`;                 
    } 
   }
 
@@ -73,8 +80,18 @@ const renderQuery = (str, data) => {
     conn.query(str, data, (err, res) => {
       if (err) throw err;
       console.table(res);
-      conn.end();
+      // conn.end();
     });
+};
+
+const returnQuery = (str) => {
+ 
+  conn.query(str, data, (err, res) => {
+    console.log(res);
+    if (err) throw err;
+    return res;    
+    // conn.end();    
+  });
 };
 
 //query update/inserte/delete 
@@ -84,7 +101,7 @@ const alterQuery = (str, data) => {
       if (err) throw err;
       console.log(`${res.affectedRows} were altered!\n`);
       readProducts();
-      conn.end();
+      // conn.end();
     });
 };
 
@@ -94,10 +111,13 @@ const alterQuery = (str, data) => {
 // }
 
 // Connect to the DB
+init(()=>{
+conn.connect((err) => {
+  if (err) throw err;
+  console.log(`connected as id ${conn.threadId}\n`);
+  //requested operation 
+  // renderQuery(sqlSelect(12),data);
+});
+});
 
-    conn.connect((err) => {
-      if (err) throw err;
-      console.log(`connected as id ${conn.threadId}\n`);
-      //requested operation 
-      renderQuery(sqlSelect(12),data);
-    });
+module.exports = { data, conn, init, sqlSelect, returnQuery, renderQuery, alterQuery  };

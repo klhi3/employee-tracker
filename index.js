@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
-const conndb = require('./assets/js/employeeDB.js');
+
+const { data, conn, init, sqlSelect, returnQuery, renderQuery, alterQuery  } = require('./assets/js/employeeDB.js');
 // const { PRIORITY_ABOVE_NORMAL } = require('node:constants');
 var figlet = require('figlet');
  
@@ -12,61 +13,92 @@ var figlet = require('figlet');
 // });
 
 
-figlet(`Employee\nManager`,{}, function(err, data) {
+figlet(`Employee\nManager`,{border: true}, function(err, data) {
   if (err) {
       console.log('Something went wrong...');
       console.dir(err);
       return;
   }
-  console.log(data)
+  init();
+
+  runSearch();
 });
 
-// const runSearch = () => {
-//   inquirer
-//     .prompt({
-//       name: 'action',
-//       type: 'list',
-//       message: 'What would you like to do?',
-//       choices: [
-//         'Add department',
-//         'Add employee' ,
-//         'Add roles',
+const runSearch = () => {
+  inquirer
+    .prompt({
+      name: 'action',
+      type: 'list',
+      message: 'What would you like to do?',
+      choices: [
+        'View All Employees',
+        'View All Employees by Department',
+        'View All Employees by Manager',
+        'Add Employee' ,
+        'Remove Employee' ,
+        'Update Employee Role' ,
+        'Update Employee Manager' ,
+        'Add roles',
 
-//         'Find songs by artist',
-//         'Find all artists who appear more than once',
-//         'Find data within a specific range',
-//         'Search for a specific song',
-//         'exit',
-//       ],
-//     })
-//     .then((answer) => {
-//       switch (answer.action) {
-//         case 'Find songs by artist':
-//           artistSearch();
-//           break;
+        // 'Find songs by artist',
+        // 'Find all artists who appear more than once',
+        // 'Find data within a specific range',
+        // 'Search for a specific song',
+        'exit',
+      ],
+    })
+    .then((answer) => {
+      switch (answer.action) {
+        case 'View All Employees':
+          renderQuery(sqlSelect(2),data);
+          break;
+        case 'Remove Employee':
+          let list=returnQuery(sqlSelect(13));
+          console.log(list);
+          removeEmployee(list);
+          break;
+        case 'exit':
+          conn.end();
+          break;
 
-//         case 'Find all artists who appear more than once':
-//           multiSearch();
-//           break;
+        default:
+          console.log(`Invalid action: ${answer.action}`);
+          break;
+      }
+    });
+};
 
-//         case 'Find data within a specific range':
-//           rangeSearch();
-//           break;
+const removeEmployee = async () => {
+  const employees = await connection.query('SELECT * FROM employee');
+  console.log({ employees });
+  const employee = inquirer
+    .prompt([
+      {
+        name: 'employee',
+        type: 'input',
+        message: 'Which employee do you want to remove?: ',
+        choice: employees.map(
+          employee =>
+            `${employee.id} ${employee.first_name} ${employee.last_name}`,
+        ),
+       }
+    ])
+    .then((answer) => {
+      const employeeId = employee.selectedValue.split(' ')[0];
+      // const query =
+      //   'SELECT position,song,artist,year FROM top5000 WHERE position BETWEEN ? AND ?';
+      // connection.query(query, [answer.start, answer.end], (err, res) => {
+      //   if (err) throw err;
+      //   res.forEach(({ position, song, artist, year }) =>
+      //     console.log(
+      //       `Position: ${position} || Song: ${song} || Artist: ${artist} || Year: ${year}`
+      //     )
+      //   );
+      //   runSearch();
+      // });
+    });
+};
 
-//         case 'Search for a specific song':
-//           songSearch();
-//           break;
-
-//         case 'Exit':
-//           connection.end();
-//           break;
-
-//         default:
-//           console.log(`Invalid action: ${answer.action}`);
-//           break;
-//       }
-//     });
-// };
 
 // const artistSearch = () => {
 //   inquirer
@@ -167,3 +199,4 @@ figlet(`Employee\nManager`,{}, function(err, data) {
 //       );
 //     });
 // };
+
