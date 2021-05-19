@@ -8,43 +8,66 @@ var figlet = require('figlet');
 
 figlet(`Employee\nManager`, function(err, data) {
   if (err) {
-      console.log('Something went wrong...');
+      console.log('Figlet has a problem..');
       console.dir(err);
       return;
   }
   console.log(data);
+  
   init()
+  console.log("3 >>>>>>");
   runSearch();
+  console.log("4 >>>>>>");
 });
 
 const runSearch = () => {
-  inquirer
-    .prompt({
+  console.log("6 >>>>>>");
+  inquirer.prompt({
       name: 'action',
       type: 'list',
       message: 'What would you like to do?',
       choices: [
+        'View Budget by departments',
         'View All Employees',
         'View All Employees by Department',
         'View All Employees by Manager',
-        'Add Employee' ,
+        'View All Departments',
+        'View All Roles',
+        'Add Employee',
+        'Add Department',
+        'Add Roles',
         'Remove Employee' ,
+        'Remove Deaprtment' ,
+        'Remove Role' ,
         'Update Employee Role' ,
         'Update Employee Manager' ,
-        'Add roles',
-        'exit',
+        'Exit',
       ],
     })
     .then((answer) => {
-      
+      console.log("7 >>>>>>");
       switch (answer.action) {
-        case 'View All Employees':
-          render(2); 
+        case 'View Budget by departments':
+          console.log("c12 >>>>>>");
+          render(12); 
           break;
+        case 'View All Employees':
+          console.log("c13 >>>>>>");
+          render(13); 
+          break;
+        case 'View All Departments':
+          console.log("c0 >>>>>>");
+          render(0); 
+          break;
+        case 'View All Roles':
+          console.log("c14 >>>>>>");
+          render(14); 
+          break;            
+            
         case 'Remove Employee':
           removeEmployee();
           break;
-        case 'exit':
+        case 'Exit':
           conn.end();
           break;
 
@@ -55,11 +78,14 @@ const runSearch = () => {
       }   
       
     });
+    console.log("9 >>>>>>");
     
+    console.log("11 >>>>>>");
 };
 
 
 const render = (num) => {
+  console.log("10 >>>>>>");
   conn.query(sqlSelect(num), async (err, res) => {
     if (err) throw err;
     console.table(res);

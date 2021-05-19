@@ -71,7 +71,10 @@ const sqlSelect = (type)=>{
      case 13 :  // all employees' name 
         return  `select *  from employee`;                 
      case 14 :  // all roles 
-        return  `select * from role`;          
+        return  `select r.id, r.title, CONCAT('$ ', FORMAT(r.salary, 0)) as salary, d.name as dept
+                  from role r
+                  left join department d 
+                  on r.department_id = d.id;`;          
    } 
   }
 
@@ -116,10 +119,13 @@ const alterQuery = (str, data) => {
 
 // Connect to the DB
 const init = (()=>{
+  console.log("init1 >>>>>>");
   conn.connect((err) => {
     if (err) throw err;
+    console.log("init3 >>>>>>");
     console.log(`connected as id ${conn.threadId}\n`);
   });
+  console.log("init2 >>>>>>");
 });
 
 
