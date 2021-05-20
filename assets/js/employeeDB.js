@@ -8,8 +8,6 @@ const cTable = require('console.table');
 //connection to the database mysql : config file
 const conn = mysql.createConnection(config);
 
-let data = [1];
-
 // sql statement
 const sqlSelect = (type)=>{
    switch (type) {
@@ -52,13 +50,11 @@ const sqlSelect = (type)=>{
                   where e.manager_id = ?`;
      case 9 :  // delete dept
         return `delete from department 
-                where id = ?`;
+                where name = ?`;          
      case 10 : // delete role
-        return `delete from role 
-                where id = ?`;
+        return `delete from role where title = ?`;
      case 11 :  // delete employee
-        return  `delete from employee
-                 where id = ?`;
+        return  `delete from employee where id = ?`;
      case 12 :  // Budget by dept and total in the last row
         return  `select 
                   case grouping(d.name) when 1 then 'Total' else d.name end as dept, 
@@ -67,50 +63,22 @@ const sqlSelect = (type)=>{
                   left join role as r on e.role_id = r.id 
                   left join department as d on d.id = r.department_id
                   group by d.name
-                  with rollup ;`;
-     case 13 :  // all employees' name 
-        return  `select *  from employee`;                 
-     case 14 :  // all roles 
-        return  `select r.id, r.title, CONCAT('$ ', FORMAT(r.salary, 0)) as salary, d.name as dept
-                  from role r
-                  left join department d 
-                  on r.department_id = d.id;`;          
+                  with rollup ;`;   
+      case 13 :  // to display employee name
+        return  `select id, first_name, last_name
+                 from employee`;
+      case 14:  //delete employee given first & last anem
+        return  `delete from employee
+                 where first_name = ? and last_name = ?;`  
+      case 15:  //get employee id
+        return  `select id from employee
+                 where first_name = ? and last_name = ?;`    
+      case 16:  //get role id
+        return  `select id from role where title = ?;`                   
+      case 17:  //get role id
+        return  `select title from role;`                   
    } 
   }
-
-//query select in the db
-const renderQuery = (str, data) => {
-    console.log('1xxxx\n');
-    conn.query(str, data, async (err, res) => {
-      if (err) throw err;
-      console.log('2xxxx\n');
-      console.table(res);
-      console.log('3xxxx\n');
-      // conn.end();
-    });
-    console.log('4xxxx\n');
-};
-
-const returnQuery = (str) => {
- 
-  conn.query(str, data, (err, res) => {
-    console.log(res);
-    if (err) throw err;
-    return res;    
-    // conn.end();    
-  });
-};
-
-//query update/inserte/delete 
-// data : { manager_id : x } or [{department_id:1},{role_id:1}]
-const alterQuery = (str, data) => { 
-  conn.query(str, data, (err, res) => {
-      if (err) throw err;
-      console.log(`${res.affectedRows} were altered!\n`);
-      readProducts();
-      // conn.end();
-    });
-};
 
 // no index column
 // const transformTable = (acc) =>{
@@ -119,14 +87,11 @@ const alterQuery = (str, data) => {
 
 // Connect to the DB
 const init = (()=>{
-  console.log("init1 >>>>>>");
   conn.connect((err) => {
     if (err) throw err;
-    console.log("init3 >>>>>>");
     console.log(`connected as id ${conn.threadId}\n`);
   });
-  console.log("init2 >>>>>>");
 });
 
 
-module.exports = { data, conn, init, sqlSelect, returnQuery, renderQuery, alterQuery  };
+module.exports = { conn, init, sqlSelect  };
