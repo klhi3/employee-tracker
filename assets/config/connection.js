@@ -1,11 +1,14 @@
 //connection to the database mysql
+
+require('dotenv').config();
+
 const config = { 
     connectionLimit: 100, 
     host: 'localhost',
     port: 3306,
-    user: 'root',
-    password: '1qaz2wsx',
-    database: 'employeeDB'
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 };
 
 module.exports = config;

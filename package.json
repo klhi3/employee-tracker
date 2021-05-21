@@ -4,7 +4,9 @@
   "description": "To architect and build a solution, **C**ontent **M**anagement **S**ystems for managing a company's employees using node, inquirer, and MySQL.",
   "main": "index.js",
   "dependencies": {
+    "asciiart-logo": "^0.2.6",
     "console.table": "^0.10.0",
+    "dotenv": "^9.0.2",
     "figlet": "^1.5.0",
     "inquirer": "^8.0.0",
     "mysql": "^2.18.1"

@@ -1,7 +1,3 @@
-drop database if exists employeeDB;
-
-create database employeeDB;
-
 use employeeDB;
 
 create table department (
