@@ -6,8 +6,6 @@ To architect and build a solution, **C**ontent **M**anagement **S**ystems for ma
 
 1. database schema containing three tables:
 
-![Database Schema](assets/images/page.gif)
-
 * **department**: id, name
 
 * **role**: id, title, salary, department_id
@@ -39,7 +37,7 @@ To organize and plan the business using a system to view and manage the departme
 
 ## Portfolio
 
-![Employee Tracker](Assets/employee-tracker.gif)
+![Employee Tracker](assets/images/page.gif)
 
 
 ## Links
@@ -52,5 +50,5 @@ To organize and plan the business using a system to view and manage the departme
 
 * [SQL Bolt](https://sqlbolt.com/) for some extra MySQL help.
 
-
+* [Dotenv](https://www.npmjs.com/package/dotenv) for environment variables.
 
